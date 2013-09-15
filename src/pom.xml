@@ -663,7 +663,7 @@
       <dependency>
         <groupId>it.geosolutions</groupId>
         <artifactId>geoserver-manager</artifactId>
-        <version>1.6-SNAPSHOT</version>
+        <version>1.6.x-enhanced</version>
       </dependency>
       <!-- =========================================================== -->
       <!-- GeoStore -->
@@ -1839,6 +1839,11 @@
       <id>geosolutions</id>
       <name>GeoSolutions Repository</name>
       <url>http://maven.geo-solutions.it</url>
+    </repository>
+    <repository>
+      <id>geosdi</id>
+      <name>geoSDI Repository</name>
+      <url>http://repo.geosdi.org</url>
     </repository>
     <repository>
       <id>osgeo</id>

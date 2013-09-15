@@ -32,6 +32,11 @@
   <!-- =========================================================== -->
   <dependencies>
     <dependency>
+      <groupId>it.geosolutions</groupId>
+      <artifactId>geoserver-manager</artifactId>
+      <version>1.6.x-enhanced</version>
+    </dependency>  
+    <dependency>
       <groupId>it.geosolutions.geobatch</groupId>
       <artifactId>tools-geobatch</artifactId>
     </dependency>
