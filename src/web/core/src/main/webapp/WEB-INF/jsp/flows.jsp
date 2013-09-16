@@ -40,7 +40,8 @@
       <link rel="stylesheet" href="css/blueprint/print.css" type="text/css" media="print" />
 	  <link rel="stylesheet" href="css/app.css" type="text/css" media="screen, projection" />
 	  <link rel="stylesheet" href="css/jpaginate.css" type="text/css" media="screen, projection" />
-	  
+	  <link rel="stylesheet" href="css/ui-ext.css" type="text/css"
+              media="screen, projection" />
 	<link type="text/css" href="css/ui-lightness/jquery-ui-1.8.custom.css" rel="stylesheet" />	
 	<script type="text/javascript" src="js/jquery-1.4.2.min.js"></script>
 	<script type="text/javascript" src="js/jquery-ui-1.8.custom.min.js"></script>
@@ -126,22 +127,13 @@
 	</style>
 </head>
 <body>
-  <div id="header">
-    <div class="wrap">
-      <h2><a class="pngfix" href="index.html"><span>GeoBatch</span></a></h2>
-      <div class="button-group selfclear">
-      </div>
-    </div><!-- /.wrap -->
-  </div><!-- /#header -->
-  <div id="main">
-    <div class="wrap selfclear">
-    <!--div id="sidebar">
-
-    </div--><!-- /#sidebar -->
-    <div id="page" class="selfclear">
-      <div class="page-header">
-
-        <div class="header-panel"></div>
+   <div class="geoSDIWrapper" >
+            <div class="google-header-bar" >
+                <div class="header geoSDIContent geoSDIClearFix">
+                   <a href="index.html"><img class="logo" src="img/geoautomator.png"	alt="Geo Automator" /></a>
+                </div>
+            </div>
+            <div class="geoSDIMain geoSDIContent geoSDIClearFix">
         
         <p>
         	<img src="img/manageFlows-small.png" style="vertical-align: middle"/>
@@ -237,13 +229,15 @@
 				<div id="pagination1"></div>
 			</div>
 		</div>
-    <div class="page-pane selfclear">
-
-    </div>
-    </div><!-- /#page -->
-    </div><!-- /.wrap> -->
-  </div><!-- /#main -->
-  <center><p><img src="img/geoSolutions-logo.png" /></p>
-  <p>Copyright &copy; 2005 - 2012 GeoSolutions.</p></center>
+   <div class="geosdi-footer-bar">
+            <div class="geoSDI-Footer geoSDIContent geoSDIClearFix">
+                <ul>
+                    <li>2011-2012 
+                        <a href="http://www.protezionecivile.it" target="_blank">Protezione Civile Nazionale</a> - powered by CNR IMAA 
+                        <a href="http://www.geosdi.org" target="_blank">geoSDI</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
 </body>
 </html>

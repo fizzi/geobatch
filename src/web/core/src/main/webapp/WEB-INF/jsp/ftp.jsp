@@ -36,37 +36,27 @@
       <link rel="stylesheet" href="css/blueprint/screen.css" type="text/css" media="screen, projection" />
       <link rel="stylesheet" href="css/blueprint/print.css" type="text/css" media="print" />
 	  <link rel="stylesheet" href="css/app.css" type="text/css" media="screen, projection" />
+          <link rel="stylesheet" href="css/ui-ext.css" type="text/css"
+              media="screen, projection" />
       <!--[if IE]>
         <link rel="stylesheet" href="css/blueprint/ie.css" type="text/css" media="screen, projection" />
 	    <link rel="stylesheet" href="css/ie.css" type="text/css" media="screen, projection" />
       <![endif]-->
 </head>
 <body>
-  <div id="header">
-    <div class="wrap">
-     <h2><a class="pngfix" href="index.html"><span>GeoBatch</span></a></h2>
-      <div class="button-group selfclear">
 
+        <div class="geoSDIWrapper" >
+            <div class="google-header-bar" >
+                <div class="header geoSDIContent geoSDIClearFix">
+                    <a href="index.html"><img class="logo" src="img/geoautomator.png"	alt="Geo Automator" /></a>
+                </div>
+            </div>
+            <div class="geoSDIMain geoSDIContent geoSDIClearFix">
 
-      </div>
-    </div><!-- /.wrap -->
-  </div><!-- /#header -->
-  <div id="main">
-    <div class="wrap selfclear">
-    <!--div id="sidebar">
-
-
-    </div--><!-- /#sidebar -->
-    <div id="page" class="selfclear">
-      <div class="page-header">
-
-        <div class="header-panel"></div>
-        <p>
-        	<img src="img/manageFTP-small.png" style="vertical-align: middle"/>
+        	<img src="img/ftp.png" style="vertical-align: middle"/>Manage FTP
         	<a href="ftp.do?view=users"><img src="img/group.png" title="Manage users" alt="Manage users" style="vertical-align: middle"/></a>
         	<a href="j_spring_security_logout"><img src="img/logout.png" title="Logout" alt="Logout" width="40" height="40" style="vertical-align: middle"/></a>
-        </p>
-        <br /><br />
+        
 
         <P/><h2>FTP Server status</h2>
         <c:if test="${errMsg!=null}">
@@ -197,13 +187,15 @@
 
 
 	</div>
-      <div class="page-pane selfclear">
-
-      </div>
-    </div><!-- /#page -->
-    </div><!-- /.wrap> -->
-  </div><!-- /#main -->
-  <center><p><img src="img/geoSolutions-logo.png" /></p>
-  <p>Copyright &copy; 2005 - 2012 GeoSolutions.</p></center>
+        <div class="geosdi-footer-bar">
+            <div class="geoSDI-Footer geoSDIContent geoSDIClearFix">
+                <ul>
+                    <li>2011-2012 
+                        <a href="http://www.protezionecivile.it" target="_blank">Protezione Civile Nazionale</a> - powered by CNR IMAA 
+                        <a href="http://www.geosdi.org" target="_blank">geoSDI</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
 </body>
 </html>

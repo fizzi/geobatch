@@ -48,10 +48,10 @@
         <load-on-startup>1</load-on-startup>
     </servlet> -->
 	
-	<!-- context-param>
-		<param-name>GEOBATCH_DATA_DIR</param-name>
-		<param-value>/opt/geobatch/data</param-value>
-	</context-param-->
+	 <context-param>
+		<param-name>GEOBATCH_CONFIG_DIR</param-name>
+		<param-value>/home/fizzi/Scrivania/GB_DATA</param-value>
+	</context-param>
 	<servlet-mapping>
 		<servlet-name>geobatch</servlet-name>
 		<url-pattern>*.do</url-pattern>

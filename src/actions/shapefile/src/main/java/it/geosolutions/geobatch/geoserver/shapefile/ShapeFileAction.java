@@ -28,13 +28,10 @@ import it.geosolutions.geobatch.flow.event.action.BaseAction;
 import it.geosolutions.geobatch.geoserver.GeoServerActionConfiguration;
 import it.geosolutions.geobatch.geoserver.tools.WorkspaceUtils;
 import it.geosolutions.geoserver.rest.GeoServerRESTManager;
-import it.geosolutions.geoserver.rest.GeoServerRESTPublisher;
 import it.geosolutions.geoserver.rest.GeoServerRESTPublisher.UploadMethod;
-import it.geosolutions.geoserver.rest.GeoServerRESTReader;
 import it.geosolutions.geoserver.rest.decoder.RESTDataStore;
 import it.geosolutions.geoserver.rest.encoder.GSResourceEncoder.ProjectionPolicy;
 import it.geosolutions.geoserver.rest.encoder.datastore.GSShapefileDatastoreEncoder;
-import it.geosolutions.geoserver.rest.manager.GeoServerRESTStoreManager;
 import it.geosolutions.tools.compress.file.Compressor;
 import it.geosolutions.tools.compress.file.Extract;
 import it.geosolutions.tools.io.file.Collector;
@@ -63,6 +60,9 @@ import com.vividsolutions.jts.geom.MultiPoint;
 import com.vividsolutions.jts.geom.MultiPolygon;
 import com.vividsolutions.jts.geom.Point;
 import com.vividsolutions.jts.geom.Polygon;
+import it.geosolutions.geoserver.rest.cas.GeoServerCASRESTPublisher;
+import it.geosolutions.geoserver.rest.cas.GeoServerCASRESTReader;
+import it.geosolutions.geoserver.rest.manager.GeoServerRESTStoreManager;
 
 /**
  * Geoserver ShapeFile action.
@@ -254,9 +254,9 @@ public class ShapeFileAction extends BaseAction<EventObject> {
             }
             listenerForwarder.progressing(10, "In progress");
 
-            GeoServerRESTReader reader = new GeoServerRESTReader(configuration.getGeoserverURL(),
+            GeoServerCASRESTReader reader = new GeoServerCASRESTReader(configuration.getGeoserverURL(),
  				   configuration.getGeoserverUID(), configuration.getGeoserverPWD());
- 			GeoServerRESTPublisher publisher = new GeoServerRESTPublisher(
+ 			GeoServerCASRESTPublisher publisher = new GeoServerCASRESTPublisher(
  					configuration.getGeoserverURL(), configuration.getGeoserverUID(), configuration.getGeoserverPWD());
 
            WorkspaceUtils.createWorkspace(reader, publisher, configuration.getDefaultNamespace(), configuration.getDefaultNamespaceUri());

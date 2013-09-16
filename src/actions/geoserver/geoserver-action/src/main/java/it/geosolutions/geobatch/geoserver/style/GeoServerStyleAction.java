@@ -2,15 +2,11 @@ package it.geosolutions.geobatch.geoserver.style;
 
 import it.geosolutions.geobatch.annotations.Action;
 import it.geosolutions.geobatch.annotations.CheckConfiguration;
-import it.geosolutions.geobatch.flow.event.IProgressListener;
 import it.geosolutions.geobatch.flow.event.action.ActionException;
 import it.geosolutions.geobatch.flow.event.action.BaseAction;
-import it.geosolutions.geobatch.geoserver.reload.GeoServerReloadConfiguration;
-import it.geosolutions.geoserver.rest.GeoServerRESTPublisher;
 import it.geosolutions.geoserver.rest.cas.GeoServerCASRESTPublisher;
 
 import java.io.File;
-import java.util.Collection;
 import java.util.EventObject;
 import java.util.Queue;
 
