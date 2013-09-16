@@ -91,10 +91,10 @@
         </beans:property>
 	</beans:bean>
 	
-   	<jdbc-user-service id="userDetailsService" 
-   			data-source-ref="dataSource-gb-users" 
-      		role-prefix="" 
-      		users-by-username-query="SELECT USER_NAME AS username, USER_PASSWORD AS password, USER_ENABLED AS enabled FROM GBUser WHERE USER_NAME = ?" 
-        	authorities-by-username-query="SELECT USER_NAME AS username, USER_ROLE AS authority FROM GBUser WHERE USER_NAME = ?" / -->
+<jdbc-user-service id="userDetailsService" 
+            data-source-ref="dataSource-gb-users" 
+    role-prefix="" 
+    users-by-username-query="SELECT USER_NAME AS username, USER_PASSWORD AS password, USER_ENABLED AS enabled FROM GBUser WHERE USER_NAME = ?" 
+    authorities-by-username-query="SELECT USER_NAME AS username, USER_ROLE AS authority FROM GBUser WHERE USER_NAME = ?" / -->
         	
 </beans:beans>

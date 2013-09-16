@@ -28,7 +28,6 @@ import it.geosolutions.geobatch.flow.event.action.BaseAction;
 import it.geosolutions.geobatch.geoserver.GeoServerActionConfiguration;
 import it.geosolutions.geobatch.geoserver.tools.WorkspaceUtils;
 import it.geosolutions.geoserver.rest.GeoServerRESTManager;
-import it.geosolutions.geoserver.rest.GeoServerRESTPublisher.UploadMethod;
 import it.geosolutions.geoserver.rest.decoder.RESTDataStore;
 import it.geosolutions.geoserver.rest.encoder.GSResourceEncoder.ProjectionPolicy;
 import it.geosolutions.geoserver.rest.encoder.datastore.GSShapefileDatastoreEncoder;
@@ -60,6 +59,7 @@ import com.vividsolutions.jts.geom.MultiPoint;
 import com.vividsolutions.jts.geom.MultiPolygon;
 import com.vividsolutions.jts.geom.Point;
 import com.vividsolutions.jts.geom.Polygon;
+import it.geosolutions.geoserver.rest.cas.GeoServerCASRESTPublisher.UploadMethod;
 import it.geosolutions.geoserver.rest.cas.GeoServerCASRESTPublisher;
 import it.geosolutions.geoserver.rest.cas.GeoServerCASRESTReader;
 import it.geosolutions.geoserver.rest.manager.GeoServerRESTStoreManager;
@@ -70,17 +70,16 @@ import it.geosolutions.geoserver.rest.manager.GeoServerRESTStoreManager;
  * Process shapefiles and inject them into a Geoserver instance.
  *
  * Accept:<br>
- * - a list of mandatory files(ref. to the shape file standard for details) - a compressed archive
- * (ref. to the Extract class to see accepted formats)
+ * - a list of mandatory files(ref. to the shape file standard for details) - a
+ * compressed archive (ref. to the Extract class to see accepted formats)
  *
- * Check the content of the input and build a valid ZIP file which represent the output of this
- * action.
+ * Check the content of the input and build a valid ZIP file which represent the
+ * output of this action.
  *
  * The same output is sent to the configured GeoServer using the GS REST api.
  *
- * TODO: check for store/layer existence
- * TODO: Handle CRSs for multiple files (see #16)
- * TODO: Handle styles for multiple files (see #16)
+ * TODO: check for store/layer existence TODO: Handle CRSs for multiple files
+ * (see #16) TODO: Handle styles for multiple files (see #16)
  *
  * @author AlFa
  * @author ETj
@@ -91,7 +90,7 @@ import it.geosolutions.geoserver.rest.manager.GeoServerRESTStoreManager;
  * @version 0.1 - date: 11 feb 2007
  * @version 0.2 - date: 25 Apr 2011
  */
-@Action(configurationClass=GeoServerShapeActionConfiguration.class)
+@Action(configurationClass = GeoServerShapeActionConfiguration.class)
 public class ShapeFileAction extends BaseAction<EventObject> {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(ShapeFileAction.class);
@@ -100,11 +99,12 @@ public class ShapeFileAction extends BaseAction<EventObject> {
         super(configuration);
     }
 
-	@Override
-	@CheckConfiguration
-	public boolean checkConfiguration() {
-		return true;
-	}
+    @Override
+    @CheckConfiguration
+    public boolean checkConfiguration() {
+        return true;
+    }
+
     /**
      *
      */
@@ -117,7 +117,7 @@ public class ShapeFileAction extends BaseAction<EventObject> {
             //
             // Initializing input variables
             //
-        	GeoServerActionConfiguration configuration=getConfiguration();
+            GeoServerActionConfiguration configuration = getConfiguration();
             if (configuration == null) {
                 throw new IllegalStateException("ActionConfig is null.");
             }
@@ -140,41 +140,42 @@ public class ShapeFileAction extends BaseAction<EventObject> {
             // upload method to use
             it.geosolutions.geobatch.geoserver.UploadMethod transferMethod = it.geosolutions.geobatch.geoserver.UploadMethod.valueOf(configuration.getDataTransferMethod());
             if (transferMethod == null) {
-                transferMethod =it.geosolutions.geobatch.geoserver.UploadMethod.getDefault(); // default one
+                transferMethod = it.geosolutions.geobatch.geoserver.UploadMethod.getDefault(); // default one
             }
 
             // list of file to send to the GeoServer
-            File[] files=null;
-            File tmpDirFile=null;
-            Integer epsgCode=null;
-            GeometryDescriptor descriptor=null;
-            CoordinateReferenceSystem crs=null;
+            File[] files = null;
+            File tmpDirFile = null;
+            Integer epsgCode = null;
+            GeometryDescriptor descriptor = null;
+            CoordinateReferenceSystem crs = null;
 
             if (inputSize == 1) {
-            	//
-            	// SINGLE FILE, is a zip or throw error
-            	//
+                //
+                // SINGLE FILE, is a zip or throw error
+                //
                 zippedFile = toFile(event);
-                if (LOGGER.isDebugEnabled())
+                if (LOGGER.isDebugEnabled()) {
                     LOGGER.debug("Testing for compressed file: " + zippedFile);
+                }
 
                 // try to extract
-                tmpDirFile = Extract.extract(zippedFile,getTempDir(),false);
+                tmpDirFile = Extract.extract(zippedFile, getTempDir(), false);
                 listenerForwarder.progressing(5, "File extracted");
 
                 //if the output (Extract) file is not a dir the event was a not compressed file so
                 //we have to throw and error
-                if(tmpDirFile==null){
+                if (tmpDirFile == null) {
                     throw new IllegalStateException("Not valid input: we need a zip file ");
                 }
 
                 if (!tmpDirFile.isDirectory()) {
-					if (!tmpDirFile.isFile()) {
-						throw new IllegalStateException(
-								"Not valid input: we need a zip file ");
-					}else{
-						tmpDirFile = tmpDirFile.getParentFile();
-					}
+                    if (!tmpDirFile.isFile()) {
+                        throw new IllegalStateException(
+                                "Not valid input: we need a zip file ");
+                    } else {
+                        tmpDirFile = tmpDirFile.getParentFile();
+                    }
                 }
 
                 // collect extracted files
@@ -186,11 +187,12 @@ public class ShapeFileAction extends BaseAction<EventObject> {
                 shapeNames = acceptable(files);
 
             } else {
-            	//
-            	// Multiple separated files, let's look for the right one
-            	//
-                if (LOGGER.isTraceEnabled())
+                //
+                // Multiple separated files, let's look for the right one
+                //
+                if (LOGGER.isTraceEnabled()) {
                     LOGGER.trace("Checking input collection...");
+                }
 
                 listenerForwarder.progressing(5, "Checking input collection...");
 
@@ -209,8 +211,8 @@ public class ShapeFileAction extends BaseAction<EventObject> {
 
                 // zip to a single file if method is not external.
                 // Will use the first shapeName as the zip name.
-                if(transferMethod!=it.geosolutions.geobatch.geoserver.UploadMethod.EXTERNAL) {
-                    zippedFile = Compressor.deflate(getTempDir(),shapeNames[0], files);
+                if (transferMethod != it.geosolutions.geobatch.geoserver.UploadMethod.EXTERNAL) {
+                    zippedFile = Compressor.deflate(getTempDir(), shapeNames[0], files);
                     if (zippedFile == null) {
                         throw new IllegalStateException("Unable to create the zip file");
                     }
@@ -221,54 +223,55 @@ public class ShapeFileAction extends BaseAction<EventObject> {
             // check that we actually found some shapefiles
             if (shapeNames == null) {
                 final String message = "Input is not a zipped file nor a valid collection of files";
-                if (LOGGER.isErrorEnabled())
+                if (LOGGER.isErrorEnabled()) {
                     LOGGER.error(message);
+                }
                 throw new IllegalStateException(message);
             }
 
             // do some additional checks and look for some ausillary information
-            for(String shape: shapeNames) {
+            for (String shape : shapeNames) {
                 FileDataStore store = null;
 
-                try{
-                	// create a shapefile datastore
-                	store=Utils.SHP_FACTORY.createDataStore(new File(tmpDirFile,shape+".shp").toURI().toURL());
+                try {
+                    // create a shapefile datastore
+                    store = Utils.SHP_FACTORY.createDataStore(new File(tmpDirFile, shape + ".shp").toURI().toURL());
 
-                	// get the CRS
+                    // get the CRS
                     crs = store.getSchema().getCoordinateReferenceSystem();
-                    epsgCode= crs!=null?CRS.lookupEpsgCode(crs, false):null;
+                    epsgCode = crs != null ? CRS.lookupEpsgCode(crs, false) : null;
 
                     // get the geometry
                     descriptor = store.getSchema().getGeometryDescriptor();
                 } finally {
-                	if(store!=null){
-                		try{
-                			store.dispose();
-                		}catch (Exception e) {
-    						if(LOGGER.isTraceEnabled()){
-    							LOGGER.trace(e.getLocalizedMessage(),e);
-    						}
-    					}
-                	}
+                    if (store != null) {
+                        try {
+                            store.dispose();
+                        } catch (Exception e) {
+                            if (LOGGER.isTraceEnabled()) {
+                                LOGGER.trace(e.getLocalizedMessage(), e);
+                            }
+                        }
+                    }
                 }
             }
             listenerForwarder.progressing(10, "In progress");
 
             GeoServerCASRESTReader reader = new GeoServerCASRESTReader(configuration.getGeoserverURL(),
- 				   configuration.getGeoserverUID(), configuration.getGeoserverPWD());
- 			GeoServerCASRESTPublisher publisher = new GeoServerCASRESTPublisher(
- 					configuration.getGeoserverURL(), configuration.getGeoserverUID(), configuration.getGeoserverPWD());
+                    configuration.getGeoserverUID(), configuration.getGeoserverPWD());
+            GeoServerCASRESTPublisher publisher = new GeoServerCASRESTPublisher(
+                    configuration.getGeoserverURL(), configuration.getGeoserverUID(), configuration.getGeoserverPWD());
 
-           WorkspaceUtils.createWorkspace(reader, publisher, configuration.getDefaultNamespace(), configuration.getDefaultNamespaceUri());
+            WorkspaceUtils.createWorkspace(reader, publisher, configuration.getDefaultNamespace(), configuration.getDefaultNamespaceUri());
 
 
             // TODO: check if a layer with the same name already exists in GS
-        	// TODO: Handle CRSs for multiple files
-        	// TODO: Handle styles for multiple files (see comment on #16)
+            // TODO: Handle CRSs for multiple files
+            // TODO: Handle styles for multiple files (see comment on #16)
 
 
             // decide CRS
-            String nativeCRS=null;
+            String nativeCRS = null;
             ProjectionPolicy projectionPolicy = ProjectionPolicy.NONE; // by default we do nothing
             final String defaultCRS = configuration.getCrs(); //do we have a default crs in the config
             String finalEPSGCode = defaultCRS; // this is the SRS for this shape
@@ -279,59 +282,60 @@ public class ShapeFileAction extends BaseAction<EventObject> {
                 if (finalEPSGCode == null) {
                     final String message = "Input file has no CRS neither the configuration provides a default one";
                     final ActionException ae = new ActionException(this, message);
-                    if (LOGGER.isErrorEnabled())
+                    if (LOGGER.isErrorEnabled()) {
                         LOGGER.error(message, ae);
+                    }
                     listenerForwarder.failed(ae);
                     throw ae;
                 }
 
                 // we do have a default, let's choose the proper CRS management
-                if(crs!=null){
-                	// we have a WKT native crs, let's use it
-                	nativeCRS=crs.toWKT();
-                	projectionPolicy = ProjectionPolicy.REPROJECT_TO_DECLARED;
+                if (crs != null) {
+                    // we have a WKT native crs, let's use it
+                    nativeCRS = crs.toWKT();
+                    projectionPolicy = ProjectionPolicy.REPROJECT_TO_DECLARED;
                 } else {
-                	projectionPolicy = ProjectionPolicy.FORCE_DECLARED;
+                    projectionPolicy = ProjectionPolicy.FORCE_DECLARED;
                 }
 
             } else {
-            	// we do have an EPSG code for the original CRS, do nothing
+                // we do have an EPSG code for the original CRS, do nothing
                 finalEPSGCode = "EPSG:" + epsgCode;
-                nativeCRS=finalEPSGCode;
+                nativeCRS = finalEPSGCode;
             }
 
 
             // check style for this geometry
-            String defaultStyle=configuration.getDefaultStyle();
-            if(defaultStyle==null || defaultStyle.isEmpty()){
-            	final GeometryType geometryType = descriptor.getType();
-            	Class clazz=geometryType.getBinding();
-            	if(clazz.isAssignableFrom(Point.class)||clazz.isAssignableFrom(MultiPoint.class)){
-            		defaultStyle=Utils.DEFAULT_POINT_STYLE;
-            	} else if(clazz.isAssignableFrom(LineString.class)||clazz.isAssignableFrom(MultiLineString.class)){
-            		defaultStyle=Utils.DEFAULT_LINE_STYLE;
-            	} else if(clazz.isAssignableFrom(Polygon.class)||clazz.isAssignableFrom(MultiPolygon.class)){
-            		defaultStyle=Utils.DEFAULT_POLYGON_STYLE;
-            	}
+            String defaultStyle = configuration.getDefaultStyle();
+            if (defaultStyle == null || defaultStyle.isEmpty()) {
+                final GeometryType geometryType = descriptor.getType();
+                Class clazz = geometryType.getBinding();
+                if (clazz.isAssignableFrom(Point.class) || clazz.isAssignableFrom(MultiPoint.class)) {
+                    defaultStyle = Utils.DEFAULT_POINT_STYLE;
+                } else if (clazz.isAssignableFrom(LineString.class) || clazz.isAssignableFrom(MultiLineString.class)) {
+                    defaultStyle = Utils.DEFAULT_LINE_STYLE;
+                } else if (clazz.isAssignableFrom(Polygon.class) || clazz.isAssignableFrom(MultiPolygon.class)) {
+                    defaultStyle = Utils.DEFAULT_POLYGON_STYLE;
+                }
             }
 
 
-            UploadMethod uMethod=null;
+            UploadMethod uMethod = null;
             switch (transferMethod) {
-			case DIRECT:
-				uMethod=UploadMethod.FILE;
-				break;
-			case EXTERNAL:
-				uMethod=UploadMethod.EXTERNAL;
-				break;
-			default:
-				throw new IllegalArgumentException("Unsupported transfer method: "+configuration.getDataTransferMethod());
-			}
+                case DIRECT:
+                    uMethod = UploadMethod.FILE;
+                    break;
+                case EXTERNAL:
+                    uMethod = UploadMethod.EXTERNAL;
+                    break;
+                default:
+                    throw new IllegalArgumentException("Unsupported transfer method: " + configuration.getDataTransferMethod());
+            }
 
             // Get some common parameters
             String wsName = configuration.getDefaultNamespace();
-            String dsName = configuration.getStoreName() == null? shapeNames[0] : configuration.getStoreName();
-            String lyrName = configuration.getLayerName() == null? shapeNames[0] : configuration.getLayerName();
+            String dsName = configuration.getStoreName() == null ? shapeNames[0] : configuration.getStoreName();
+            String lyrName = configuration.getLayerName() == null ? shapeNames[0] : configuration.getLayerName();
             String styleName = defaultStyle;
 
 
@@ -342,8 +346,10 @@ public class ShapeFileAction extends BaseAction<EventObject> {
             boolean success = false;
 
             // Either publish a single shapefile, or a collection of shapefiles
-            if(shapeNames.length==1) {
-				success = publisher.publishShp(wsName,
+            if (shapeNames.length == 1) {
+
+//                success = publisher.publishShp(wsName, styleName, nukl, styleName, GeoServerCASRESTPublisher.UploadMethod.FILE, null, dsName, defaultStyle);
+                success = publisher.publishShp(wsName,
                         dsName,
                         null,
                         lyrName,
@@ -354,67 +360,77 @@ public class ShapeFileAction extends BaseAction<EventObject> {
                         projectionPolicy,
                         styleName);
             } else {
-            	success = publisher.publishShpCollection(wsName, dsName, zippedFile.toURI());
+                success = publisher.publishShpCollection(wsName, dsName, zippedFile.toURI());
             }
 
             if (success) {
                 final String message = "Shape file SUCCESFULLY sent";
-                if (LOGGER.isInfoEnabled())
+                if (LOGGER.isInfoEnabled()) {
                     LOGGER.info(message);
+                }
                 listenerForwarder.progressing(90, message);
             } else {
                 final String message = "Shape file FAILED to be sent";
                 final ActionException ae = new ActionException(this, message);
-                if (LOGGER.isErrorEnabled())
+                if (LOGGER.isErrorEnabled()) {
                     LOGGER.error(message, ae);
+                }
                 listenerForwarder.failed(ae);
                 throw ae;
             }
 
             // If we have shape specific config, apply now
             if (configuration instanceof GeoServerShapeActionConfiguration) {
-            	// Log
-                if (LOGGER.isInfoEnabled())
+                // Log
+                if (LOGGER.isInfoEnabled()) {
                     LOGGER.info("Configuring shape datastore connection parameters");
+                }
 
-            	// Get config
-            	GeoServerShapeActionConfiguration shpConfig = (GeoServerShapeActionConfiguration)configuration;
+                // Get config
+                GeoServerShapeActionConfiguration shpConfig = (GeoServerShapeActionConfiguration) configuration;
 
-            	// Get managers from geoserver-manager
-            	GeoServerRESTManager manager = new GeoServerRESTManager(new URL(shpConfig.getGeoserverURL()),
-            			shpConfig.getGeoserverUID(), shpConfig.getGeoserverPWD());
-            	GeoServerRESTStoreManager dsManager = manager.getStoreManager();
+                // Get managers from geoserver-manager
+                GeoServerRESTManager manager = new GeoServerRESTManager(new URL(shpConfig.getGeoserverURL()),
+                        shpConfig.getGeoserverUID(), shpConfig.getGeoserverPWD());
+                GeoServerRESTStoreManager dsManager = manager.getStoreManager();
 
-            	// Read config from GS
-            	RESTDataStore dsRead = manager.getReader().getDatastore(wsName, dsName);
-            	GSShapefileDatastoreEncoder dsWrite = new GSShapefileDatastoreEncoder(dsRead);
+                // Read config from GS
+                RESTDataStore dsRead = manager.getReader().getDatastore(wsName, dsName);
+                GSShapefileDatastoreEncoder dsWrite = new GSShapefileDatastoreEncoder(dsRead);
 
-            	// Update store params
-            	if (shpConfig.getUrl() != null)
-            		dsWrite.setUrl(shpConfig.getUrl());
-            	if (shpConfig.getCharset() != null)
-            		dsWrite.setCharset(shpConfig.getCharset());
-            	if (shpConfig.getCreateSpatialIndex() != null)
-            		dsWrite.setCreateSpatialIndex(shpConfig.getCreateSpatialIndex());
-            	if (shpConfig.getMemoryMappedBuffer() != null)
-            		dsWrite.setMemoryMappedBuffer(shpConfig.getMemoryMappedBuffer());
-            	if (shpConfig.getCacheAndReuseMemoryMaps() != null)
-            	dsWrite.setCacheAndReuseMemoryMaps(shpConfig.getCacheAndReuseMemoryMaps());
+                // Update store params
+                if (shpConfig.getUrl() != null) {
+                    dsWrite.setUrl(shpConfig.getUrl());
+                }
+                if (shpConfig.getCharset() != null) {
+                    dsWrite.setCharset(shpConfig.getCharset());
+                }
+                if (shpConfig.getCreateSpatialIndex() != null) {
+                    dsWrite.setCreateSpatialIndex(shpConfig.getCreateSpatialIndex());
+                }
+                if (shpConfig.getMemoryMappedBuffer() != null) {
+                    dsWrite.setMemoryMappedBuffer(shpConfig.getMemoryMappedBuffer());
+                }
+                if (shpConfig.getCacheAndReuseMemoryMaps() != null) {
+                    dsWrite.setCacheAndReuseMemoryMaps(shpConfig.getCacheAndReuseMemoryMaps());
+                }
 
-            	// Push changes to GS
-            	success = dsManager.update(wsName, dsWrite);
+                // Push changes to GS
+                success = dsManager.update(wsName, dsWrite);
 
-            	// Success or die
+                // Success or die
                 if (success) {
                     String message = "Shape datastore SUCCESFULLY configured";
-                    if (LOGGER.isInfoEnabled())
+                    if (LOGGER.isInfoEnabled()) {
                         LOGGER.info(message);
+                    }
                     listenerForwarder.progressing(100, message);
                 } else {
                     String message = "Shape datastore FAILED to be configured";
                     final ActionException ae = new ActionException(this, message);
-                    if (LOGGER.isErrorEnabled())
+                    if (LOGGER.isErrorEnabled()) {
                         LOGGER.error(message, ae);
+                    }
                     listenerForwarder.failed(ae);
                     throw ae;
                 }
@@ -424,8 +440,9 @@ public class ShapeFileAction extends BaseAction<EventObject> {
 
         } catch (Throwable t) {
             final ActionException ae = new ActionException(this, t.getMessage(), t);
-            if (LOGGER.isErrorEnabled())
+            if (LOGGER.isErrorEnabled()) {
                 LOGGER.error(ae.getLocalizedMessage(), ae);
+            }
             listenerForwarder.failed(ae); // fails the Action
             throw ae;
         }
@@ -435,17 +452,17 @@ public class ShapeFileAction extends BaseAction<EventObject> {
      * check for mandatory files in the passed list:
      * <ul>
      * <li>.shp — shape format; the feature geometry itself
-     * <li>.dbf — attribute format; columnar attributes for each shape, in dBase IV
-     * format
-     * <li>.shx — shape index format; a positional index of the feature geometry to
-     * allow seeking forwards and backwards quickly
+     * <li>.dbf — attribute format; columnar attributes for each shape, in dBase
+     * IV format
+     * <li>.shx — shape index format; a positional index of the feature geometry
+     * to allow seeking forwards and backwards quickly
      * </ul>
      *
      * There can be multiple shapefiles.
      *
      * @param files a list of files to check for.
-     * @return null if 'files' do not contain needed files,
-     * or the name of the acceptable shape files (*.shp) otherwise.
+     * @return null if 'files' do not contain needed files, or the name of the
+     * acceptable shape files (*.shp) otherwise.
      */
     private static String[] acceptable(final File[] files) {
 
@@ -458,38 +475,38 @@ public class ShapeFileAction extends BaseAction<EventObject> {
         List<String> acceptable = new ArrayList<String>();
 
         // Get all the candidate file names
-        for(File file : files) {
-        	if(file != null) {
-        		candidates.add(FilenameUtils.getName(file.getName()));
-        	}
+        for (File file : files) {
+            if (file != null) {
+                candidates.add(FilenameUtils.getName(file.getName()));
+            }
         }
 
         // Get the acceptable ones.
         // That is: a .shp for what .shx and .dbf associate files exist
-        for(String fileName : candidates) {
-        	final String baseName = FilenameUtils.getBaseName(fileName);
-        	final String extension = FilenameUtils.getExtension(fileName);
-        	if (extension.equalsIgnoreCase("shp") &&
-        		candidates.contains(baseName+".shx") && // is index really mandatory?
-        		candidates.contains(baseName+".dbf")) {
-        			acceptable.add(baseName);
-    		}
-    	}
+        for (String fileName : candidates) {
+            final String baseName = FilenameUtils.getBaseName(fileName);
+            final String extension = FilenameUtils.getExtension(fileName);
+            if (extension.equalsIgnoreCase("shp")
+                    && candidates.contains(baseName + ".shx") && // is index really mandatory?
+                    candidates.contains(baseName + ".dbf")) {
+                acceptable.add(baseName);
+            }
+        }
 
         // Return acceptable as an array, or null if none.
         if (acceptable.isEmpty()) {
-        	return null;
+            return null;
         } else {
-        	return acceptable.toArray(new String[1]);
+            return acceptable.toArray(new String[1]);
         }
     }
 
     private static File toFile(EventObject eo) {
-    	Object o = eo.getSource();
-    	if(o instanceof File) {
-    		return (File)o;
-    	} else {
-    		return null;
-    	}
+        Object o = eo.getSource();
+        if (o instanceof File) {
+            return (File) o;
+        } else {
+            return null;
+        }
     }
 }

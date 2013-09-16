@@ -40,6 +40,19 @@ Version: 0.1 pom.xml 63 2011-05-02 18:55:57Z ccancellieri $ ====================
         <!-- ============================== -->
         <!-- GeoBatch modules               -->
         <!-- ============================== -->
+        
+         <dependency>
+            <groupId>org.jasig.cas.client</groupId>
+            <artifactId>cas-client-core</artifactId>
+            <version>3.2.1</version>
+            <scope>runtime</scope>
+            <exclusions>
+                <exclusion>
+                    <artifactId>commons-logging</artifactId>
+                    <groupId>commons-logging</groupId>
+                </exclusion>
+            </exclusions>
+        </dependency>
 
         <dependency>
             <groupId>it.geosolutions.geobatch</groupId>
