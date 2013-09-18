@@ -22,7 +22,6 @@
 package it.geosolutions.geobatch.geoserver.test;
 
 import it.geosolutions.geoserver.rest.GeoServerRESTReader;
-import it.geosolutions.geoserver.rest.cas.GeoServerCASRESTReader;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -74,10 +73,10 @@ public abstract class GeoServerTests {
 
     private static boolean geoServerExists(final String url, final String user, final String pass) {
         if (enabled) {
-            GeoServerCASRESTReader reader;
+            GeoServerRESTReader reader;
             try {
                 if (!existgs) {
-                    reader = new GeoServerCASRESTReader(new URL(URL), UID, PWD);
+                    reader = new GeoServerRESTReader(new URL(URL), UID, PWD);
                     existgs = reader.existGeoserver();
                 }
             } catch (MalformedURLException e) {

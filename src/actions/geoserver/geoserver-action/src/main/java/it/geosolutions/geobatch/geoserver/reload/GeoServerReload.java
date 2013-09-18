@@ -28,7 +28,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.thoughtworks.xstream.XStream;
-import it.geosolutions.geoserver.rest.cas.GeoServerCASRESTPublisher;
 
 @Action(configurationClass=GeoServerReloadConfiguration.class)
 public class GeoServerReload extends BaseAction<EventObject> {
@@ -211,7 +210,7 @@ public class GeoServerReload extends BaseAction<EventObject> {
 
 		@Override
 		public Boolean call() throws Exception {
-			GeoServerCASRESTPublisher publisher = new GeoServerCASRESTPublisher(url,
+			GeoServerRESTPublisher publisher = new GeoServerRESTPublisher(url,
                 user, pass);
 
 			if (!publisher.reload()) {

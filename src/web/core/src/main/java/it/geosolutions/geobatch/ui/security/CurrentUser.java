@@ -21,13 +21,22 @@
  */
 package it.geosolutions.geobatch.ui.security;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+import org.jasig.cas.client.util.AbstractCasFilter;
+import org.jasig.cas.client.validation.Assertion;
+import org.jasig.cas.client.validation.AssertionImpl;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.GrantedAuthorityImpl;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 /**
  * @author Administrator
@@ -55,9 +64,26 @@ public class CurrentUser {
             System.out.println("Login cas in corso ...");
             Authentication authentication = new UsernamePasswordAuthenticationToken("admin", "admin");
 
-            SecurityContextHolder.getContext().setAuthentication(authentication);
+            List<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>(authentication.getAuthorities());
+            authorities.add(new GrantedAuthorityImpl("ROLE_ADMIN"));
+
+            Authentication authWithGrantedAuthority = new UsernamePasswordAuthenticationToken(authentication.getPrincipal(), authentication.getCredentials(), authorities);
+
+            SecurityContextHolder.getContext().setAuthentication(authWithGrantedAuthority);
+            
         }
+    }
 
+    public Assertion retrieveAssertion() {
+       
+        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder
+                .getRequestAttributes()).getRequest();
+        HttpSession session = request.getSession(false);
 
+        Assertion receivedAssertion = (AssertionImpl) session.getAttribute(AbstractCasFilter.CONST_CAS_ASSERTION);
+
+        System.out.println("Current User Assertion: ***********************************" + receivedAssertion.getPrincipal().getName());
+
+        return receivedAssertion;
     }
 }

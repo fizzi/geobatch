@@ -3,8 +3,6 @@ package it.geosolutions.geobatch.geoserver.tools;
 import it.geosolutions.geobatch.geoserver.GeoServerActionConfiguration;
 import it.geosolutions.geoserver.rest.GeoServerRESTPublisher;
 import it.geosolutions.geoserver.rest.GeoServerRESTReader;
-import it.geosolutions.geoserver.rest.cas.GeoServerCASRESTPublisher;
-import it.geosolutions.geoserver.rest.cas.GeoServerCASRESTReader;
 
 import java.net.MalformedURLException;
 import java.net.URI;
@@ -33,8 +31,8 @@ public abstract class WorkspaceUtils {
 	 *         provided name already exist.
 	 * @throws URISyntaxException
 	 */
-	public static boolean createWorkspace(GeoServerCASRESTReader reader,
-			GeoServerCASRESTPublisher publisher, String defaultNamespace,
+	public static boolean createWorkspace(GeoServerRESTReader reader,
+			GeoServerRESTPublisher publisher, String defaultNamespace,
 			String defaultNamespaceUri) throws URISyntaxException {
 
 		if (reader == null || publisher == null) {
@@ -88,9 +86,9 @@ public abstract class WorkspaceUtils {
 		}
 
 		// Get GS reader & publisher
-		GeoServerCASRESTReader reader = new GeoServerCASRESTReader(geoserverURL,
+		GeoServerRESTReader reader = new GeoServerRESTReader(geoserverURL,
 				geoserverUID, geoserverPWD);
-		GeoServerCASRESTPublisher publisher = new GeoServerCASRESTPublisher(
+		GeoServerRESTPublisher publisher = new GeoServerRESTPublisher(
 				geoserverURL, geoserverUID, geoserverPWD);
 
 		return createWorkspace(reader, publisher, defaultNamespace,

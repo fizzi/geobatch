@@ -48,7 +48,7 @@ public class GeoServerStyleConfiguration extends GeoServerActionConfig {
 	@Override
     public GeoServerStyleConfiguration clone() { 
         final GeoServerStyleConfiguration configuration = (GeoServerStyleConfiguration) super.clone();
-
+        
         return configuration;
     }
 

@@ -28,9 +28,8 @@ import it.geosolutions.geobatch.flow.event.action.ActionException;
 import it.geosolutions.geobatch.flow.event.action.BaseAction;
 import it.geosolutions.geobatch.geoserver.GeoServerActionConfiguration;
 import it.geosolutions.geobatch.geoserver.tools.WorkspaceUtils;
+import it.geosolutions.geoserver.rest.GeoServerRESTPublisher;
 import it.geosolutions.geoserver.rest.GeoServerRESTReader;
-import it.geosolutions.geoserver.rest.cas.GeoServerCASRESTPublisher;
-import it.geosolutions.geoserver.rest.cas.GeoServerCASRESTReader;
 import it.geosolutions.geoserver.rest.encoder.GSLayerEncoder;
 import it.geosolutions.geoserver.rest.encoder.GSResourceEncoder.ProjectionPolicy;
 import it.geosolutions.geoserver.rest.encoder.coverage.GSCoverageEncoder;
@@ -255,11 +254,11 @@ public class GeotiffGeoServerAction extends BaseAction<FileSystemEvent> {
         // SENDING data to GeoServer via REST protocol.
         //
         boolean sent = false;
-		GeoServerCASRESTPublisher publisher = new GeoServerCASRESTPublisher(
+		GeoServerRESTPublisher publisher = new GeoServerRESTPublisher(
 				configuration.getGeoserverURL(),
 				configuration.getGeoserverUID(),
 				configuration.getGeoserverPWD());
-		GeoServerCASRESTReader reader = new GeoServerCASRESTReader(
+		GeoServerRESTReader reader = new GeoServerRESTReader(
 				configuration.getGeoserverURL(),
 				configuration.getGeoserverUID(),
 				configuration.getGeoserverPWD());

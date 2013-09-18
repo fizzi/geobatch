@@ -4,7 +4,7 @@ import it.geosolutions.geobatch.annotations.Action;
 import it.geosolutions.geobatch.annotations.CheckConfiguration;
 import it.geosolutions.geobatch.flow.event.action.ActionException;
 import it.geosolutions.geobatch.flow.event.action.BaseAction;
-import it.geosolutions.geoserver.rest.cas.GeoServerCASRESTPublisher;
+import it.geosolutions.geoserver.rest.GeoServerRESTPublisher;
 
 import java.io.File;
 import java.util.EventObject;
@@ -27,6 +27,7 @@ public class GeoServerStyleAction extends BaseAction<EventObject> {
     public GeoServerStyleAction(GeoServerStyleConfiguration actionConfiguration) {
         super(actionConfiguration);
         conf = actionConfiguration;
+
     }
 
     @Override
@@ -54,8 +55,10 @@ public class GeoServerStyleAction extends BaseAction<EventObject> {
         final String pass = conf.getGeoserverPWD();
         final String user = conf.getGeoserverUID();
         final String url = conf.getGeoserverURL();
-        GeoServerCASRESTPublisher publisher = new GeoServerCASRESTPublisher(url,
+        GeoServerRESTPublisher publisher = new GeoServerRESTPublisher(url,
                 user, pass);
+
+
         // TODO check for GS
 
         listenerForwarder.completed();

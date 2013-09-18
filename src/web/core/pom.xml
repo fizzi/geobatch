@@ -59,6 +59,12 @@
             <groupId>it.geosolutions.geobatch</groupId>
             <artifactId>tools-geobatch</artifactId>
         </dependency>
+        
+        <dependency>
+            <groupId>it.geosolutions</groupId>
+            <artifactId>geoserver-manager</artifactId>
+            <version>1.6.x-enhanced</version>
+        </dependency>
 
 
         <!-- ============================== -->
@@ -82,7 +88,7 @@
             <artifactId>cas-client-core</artifactId>
             <version>3.2.1</version>
             <type>jar</type>
-             <exclusions>
+            <exclusions>
                 <exclusion>
                     <artifactId>commons-logging</artifactId>
                     <groupId>commons-logging</groupId>
